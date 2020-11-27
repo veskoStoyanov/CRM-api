@@ -11,19 +11,24 @@ let transporter = nodemailer.createTransport({
 });
 
 const Tools = {
-  async sendLoginEmail(email) {
-    const token = jwt.sign(
-      { email },
+  generateToken (data) {
+    return jwt.sign(
+      { data },
       process.env.JWT_SECRET, 
       { expiresIn: '7d' }
     );
+  },
 
-    return transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: 'Account activation link',
-      html: `<hr/><h1>Please use the following link <a href=${process.env.CLIENT_URL}/users/activate/${token}>${process.env.CLIENT_URL}</a> to activate your account</h1><hr/>`
-    })
+  async sendLoginEmail(data) {
+    const token = this.generateToken(data)
+    console.log(token);
+    
+    // return transporter.sendMail({
+    //   from: process.env.EMAIL_FROM,
+    //   to: email,
+    //   subject: 'Account activation link',
+    //   html: `<hr/><h1>Please use the following link <a href=${process.env.CLIENT_URL}/login/activate/${token}>${process.env.CLIENT_URL}</a> to activate your account</h1><hr/>`
+    // })
   }
 }
 

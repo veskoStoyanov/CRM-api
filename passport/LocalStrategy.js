@@ -2,6 +2,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const User = require('../models/User');
 
 module.exports = passport => {
+  'local-signin',
   passport.use(
     new LocalStrategy({
       usernameField: 'email',

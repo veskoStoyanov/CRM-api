@@ -55,6 +55,26 @@
         }
       }
     },
+    "/user/activate": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Activate user",
+        "description": "Activate user endpoint",
+        "operationId": "activateUser",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+               
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/logout": {
       "post": {
         "summary": "Logout user",

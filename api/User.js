@@ -15,43 +15,37 @@ const loginUser = async (req, res, next) => {
             return res.status(400).json({ errors: [err] });
         }
      
-		return res.status(200).json({ success: true, user });
+		return res.status(200).json({ success: true});
+	})(req, res, next);
+};
+
+const activateUser = async (req, res, next) => {
+	passport.authenticate('jwt-strategy', { session: false }, async (err, user) => {
+		if (err) return next(err);
+
+		if (!user) {
+			return res.status(400).json({ errors: [err] });
+		}
+        
+		const token = T.generateToken(user.email);
+ 
+		return res.status(200).json({ success: true, user,  token});
 	})(req, res, next);
 };
 
 const logoutUser = async (req, res) => res.status(200).send('Success');
 
 const updateUser = async (req, res) => {
-	const _id = req.params.id;
-	const userInfo = req.body;
-
-	let user = await Auth.fetchUser({ _id });
-
-	if (!user) {
-		return res.status(400).send({ message: 'Invalid user id' });
-	}
-
-	Object.keys(userInfo)
-		.forEach(key => {
-			user[key] = userInfo[key];
-		});
-
-	await user.save();
-	user = T.removeProps(userInfo, propsForDeleting);
-
-	return res.status(200).send({ message: 'User has been updated successfuly', userInfo });
+	
 };
 
 const getUser = async (req, res) => {
-	const _id = req.params.id;
-	let userData = await Auth.fetchUser({ _id });
-	userData = T.removeProps(userData);
-
-	return res.status(200).send(userData);
+	
 };
 
 module.exports = {
 	loginUser,
+	activateUser,
 	logoutUser,
 	updateUser,
 	getUser,

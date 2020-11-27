@@ -9,9 +9,7 @@ require('dotenv').config({
     path: './config/config.env'
 })
 
-// CORS
-
-// Dev Logginf Middleware
+// Core and Morgan
 if (process.env.NODE_ENV === 'development') {
     app.use(cors({
         origin: process.env.CLIENT_URL
@@ -32,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 require('./api')(app);
 
 // Passport Config
-require('./auth/LocalStrategy')(passport);
+require('./passport')(passport);
 
 const PORT = process.env.PORT || 5000;
 
