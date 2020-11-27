@@ -1,0 +1,325 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "InsyDirectApi",
+    "version": "1.0.0",
+    "description": "InsInCloud Direct API",
+    "contact": {
+      "email": "ddimitrov@insincloud.com",
+      "name": "Daniel Dimitrov",
+      "url": "http://insincloud.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.insincloud.com/v1/dir/",
+      "description": "Production Api server"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Login user",
+        "description": "Login user endpoint",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+               "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+               
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "summary": "Logout user",
+        "description": "Logout the currently logged user.",
+          "tags": [
+          "user"
+        ],
+        "operationId": "logoutUser",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User profile update",
+        "description": "Update user's self profile information",
+        "operationId": "updateUser",
+        "requestBody": {
+          "description": "User object with fields for update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Credentials": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "jdoe@example.com"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "jdoe@example.com"
+          }
+        }
+      },
+      "Hooks": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "Partner": {
+        "type": "object",
+        "required": [
+          "name",
+          "commission",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "jdoe@example.com"
+          },
+          "affilliate": {
+            "type": "string",
+            "example": "dadadsd-1343124"
+          },
+          "status": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "Integrations": {
+        "type": "object",
+        "properties": {
+          "connector": {
+            "type": "string",
+            "example": "amoCRM"
+          },
+          "name": {
+            "type": "string",
+            "example": "amoCRM CRM integration"
+          }
+        }
+      },
+      "Field": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Field slug",
+            "example": "fname"
+          },
+          "name": {
+            "type": "string",
+            "description": "Field name",
+            "example": "First name"
+          },
+          "help": {
+            "type": "string",
+            "example": "Enter your first name"
+          },
+          "system": {
+            "type": "boolean"
+          },
+          "info": {
+            "type": "object",
+            "example": "First name field"
+          }
+        }
+      },
+      "FieldPair": {
+        "type": "object",
+        "properties": {
+          "field_slug": {
+            "type": "string",
+            "example": "Can be any value - string, number, boolean, array or object."
+          }
+        }
+      },
+      "Target": {
+        "type": "object",
+        "required": [
+          "product",
+          "priceInfo",
+          "price"
+        ],
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "product id",
+            "format": "id",
+            "example": "5e999dd42d5a9e7311647b74"
+          },
+          "priceInfo": {
+            "$ref": "#/components/schemas/FieldPair"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 165.05
+          }
+        }
+      },
+      "PriceTag": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "example": "Bulstrad - THIS prop is going to change to a full company!"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 165.05
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "adfasfa-000001"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field_slug": {
+                  "example": "Can be any value - string, number, boolean, array or object."
+                }
+              }
+            }
+          },
+          "price": {
+            "$ref": "#/components/schemas/PriceTag"
+          }
+        }
+      },
+      "Insurance": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Third party liability"
+          }
+        }
+      }
+    }
+  }
+}
