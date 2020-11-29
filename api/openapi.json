@@ -67,9 +67,7 @@
           "200": {
             "description": "Successful operation",
             "content": {
-              "application/json": {
-               
-              }
+              "application/json": {}
             }
           }
         }
@@ -159,19 +157,120 @@
           }
         }
       }
+    },
+    "/pipe": {
+      "post": {
+        "tags": [
+          "pipe"
+        ],
+        "summary": "Login user",
+        "description": "Login user endpoint",
+        "operationId": "createPipe",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+               "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/pipe/{pipeName}": {
+      "get": {
+        "tags": [
+          "pipe"
+        ],
+        "summary": "Get all pipes.",
+        "description": "Get all pipes",
+        "operationId": "getPipes",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/lead/{pipeName}": {
+      "post": {
+        "summary": "Logout user",
+        "description": "Logout the currently logged user.",
+          "tags": [
+          "user"
+        ],
+        "operationId": "createLead",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/pipe/lead/move": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "moveLead",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/pipe/title": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "updateTitle",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "Credentials": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "jdoe@example.com"
-          }
-        }
-      },
       "User": {
         "type": "object",
         "required": [
@@ -181,162 +280,6 @@
           "email": {
             "type": "string",
             "example": "jdoe@example.com"
-          }
-        }
-      },
-      "Hooks": {
-        "type": "object",
-        "additionalProperties": true
-      },
-      "Partner": {
-        "type": "object",
-        "required": [
-          "name",
-          "commission",
-          "email"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "John Doe"
-          },
-          "email": {
-            "type": "string",
-            "example": "jdoe@example.com"
-          },
-          "affilliate": {
-            "type": "string",
-            "example": "dadadsd-1343124"
-          },
-          "status": {
-            "type": "string",
-            "readOnly": true
-          }
-        }
-      },
-      "Integrations": {
-        "type": "object",
-        "properties": {
-          "connector": {
-            "type": "string",
-            "example": "amoCRM"
-          },
-          "name": {
-            "type": "string",
-            "example": "amoCRM CRM integration"
-          }
-        }
-      },
-      "Field": {
-        "type": "object",
-        "required": [
-          "slug",
-          "name"
-        ],
-        "properties": {
-          "slug": {
-            "type": "string",
-            "description": "Field slug",
-            "example": "fname"
-          },
-          "name": {
-            "type": "string",
-            "description": "Field name",
-            "example": "First name"
-          },
-          "help": {
-            "type": "string",
-            "example": "Enter your first name"
-          },
-          "system": {
-            "type": "boolean"
-          },
-          "info": {
-            "type": "object",
-            "example": "First name field"
-          }
-        }
-      },
-      "FieldPair": {
-        "type": "object",
-        "properties": {
-          "field_slug": {
-            "type": "string",
-            "example": "Can be any value - string, number, boolean, array or object."
-          }
-        }
-      },
-      "Target": {
-        "type": "object",
-        "required": [
-          "product",
-          "priceInfo",
-          "price"
-        ],
-        "properties": {
-          "product": {
-            "type": "string",
-            "description": "product id",
-            "format": "id",
-            "example": "5e999dd42d5a9e7311647b74"
-          },
-          "priceInfo": {
-            "$ref": "#/components/schemas/FieldPair"
-          },
-          "price": {
-            "type": "number",
-            "format": "float",
-            "example": 165.05
-          }
-        }
-      },
-      "PriceTag": {
-        "type": "object",
-        "properties": {
-          "company": {
-            "type": "string",
-            "example": "Bulstrad - THIS prop is going to change to a full company!"
-          },
-          "price": {
-            "type": "number",
-            "format": "float",
-            "example": 165.05
-          }
-        }
-      },
-      "Order": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "adfasfa-000001"
-          },
-          "fields": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "field_slug": {
-                  "example": "Can be any value - string, number, boolean, array or object."
-                }
-              }
-            }
-          },
-          "price": {
-            "$ref": "#/components/schemas/PriceTag"
-          }
-        }
-      },
-      "Insurance": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "example": "Third party liability"
           }
         }
       }
