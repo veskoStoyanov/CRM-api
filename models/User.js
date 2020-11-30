@@ -5,10 +5,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  pipelines: {
-    type: Array,
-    default: ['main']
-  }
+  pipelines: [{
+    type: 'ObjectId',
+    ref: 'Pipeline',
+    default: []
+  }]
 });
 
 const User = mongoose.model('User', UserSchema);

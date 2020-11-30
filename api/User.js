@@ -8,7 +8,7 @@ const loginUser = async (req, res, next) => {
 		if (!user) { return res.status(400).json({ errors: [err] }); }
 
 		try {
-			await T.sendLoginEmail(user.email);
+			await T.sendLoginEmail(user);
 		} catch (e) {
 			return res.status(400).json({ errors: [err] });
 		}
@@ -25,7 +25,7 @@ const activateUser = async (req, res, next) => {
 
 		let token = '';
 		try {
-			token = T.generateToken(user.email);
+			token = T.generateToken(user);
 		} catch (e) {
 			return res.status(400).json({ errors: [err] });
 		}

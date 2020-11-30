@@ -176,6 +176,46 @@
         }
       }
     },
+    "/lead": {
+      "post": {
+        "summary": "Create Lead",
+        "description": "Logout the currently logged user.",
+          "tags": [
+          "lead"
+        ],
+        "operationId": "createLead",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/lead/delete/{id}": {
+      "post": {
+        "summary": "Create Lead",
+        "description": "Logout the currently logged user.",
+          "tags": [
+          "lead"
+        ],
+        "operationId": "deleteLead",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
     "/lead/{id}": {
       "get": {
         "tags": [
@@ -197,13 +237,31 @@
           }
         }
       },
-      "post": {
-        "summary": "Logout user",
+      "put": {
+        "summary": "Update lead",
         "description": "Logout the currently logged user.",
           "tags": [
           "lead"
         ],
-        "operationId": "createLead",
+        "operationId": "updateLead",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete lead",
+        "description": "Logout the currently logged user.",
+          "tags": [
+          "lead"
+        ],
+        "operationId": "deleteLead",
         "responses": {
           "200": {
             "description": "successful operation",

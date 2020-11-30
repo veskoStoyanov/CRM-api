@@ -9,11 +9,7 @@ const PipeLineSchema = new mongoose.Schema({
     type: 'ObjectId',
     ref: 'Pipe',
     default: []
-  }],
-  user: {
-    type: 'ObjectId',
-    ref: 'User',
-  }
+  }]
 });
 
 const Pipe = mongoose.model('Pipeline', PipeLineSchema);
