@@ -8,22 +8,31 @@ const getAllPipelines = async (req, res, next) => {
   try {
     pipelines = await P.getAllPipelines(id);
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
   return res.status(200).json({ success: true, pipelines });
 };
 
-const getAllPipes = async (req, res, next) => {
+const getPipelineData = async (req, res, next) => {
   const { id } = req.params;
-  const pipeline = await P.getAllPipes(id);
+  let pipes = null;
+  try {
+    const pipelineData = await P.getPipelineDataById(id);
+    pipes = pipelineData.pipes;
 
-  return res.status(200).json({ success: true, pipeline });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, pipes });
 };
 
 const createLead = async (req, res, next) => {
   const { id } = req.params;
-  let lead =null;
+  let lead = null;
   try {
     lead = await P.createLead(req.body);
     const pipeline = await P.getPipelineById(id)
@@ -31,6 +40,7 @@ const createLead = async (req, res, next) => {
     pipe.leads.push(lead);
     pipe.save();
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
@@ -55,20 +65,49 @@ const moveLead = async (req, res, next) => {
     if (sourceId === destinationId) {
       destinationPipe = sourcePipe;
     } else {
-      destinationPipe = await P.getById(destinationId);
+      destinationPipe = await P.getPipeById(destinationId);
     }
 
     destinationPipe.leads.splice(destinationIndex, 0, lead);
-    sourcePipe.save();
+    await sourcePipe.save();
 
     if (sourceId !== destinationId) {
-      destinationPipe.save();
+      await destinationPipe.save();
     }
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
   return res.status(200).json({ success: true, lead });
+};
+
+const movePipe = async (req, res, next) => {
+  const {
+    sourceIndex,
+    destinationIndex,
+    pipelineId
+  } = req.body;
+
+  let pipeline = null;
+  let pipes = null;
+  try {
+    pipeline = await P.getPipelineDataById(pipelineId);
+
+    if (sourceIndex === 0 || destinationIndex === 0) {
+      return res.status(200).json({ success: true, pipes: pipeline.pipes });
+    }
+
+    const pipe = pipeline.pipes.splice(sourceIndex, 1)[0];
+    pipeline.pipes.splice(destinationIndex, 0, pipe);
+    await pipeline.save();
+    pipes = pipeline.pipes
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, pipes });
 };
 
 const createPipe = async (req, res, next) => {
@@ -80,25 +119,25 @@ const createPipe = async (req, res, next) => {
     pipeline.pipes.push(pipe);
     await pipeline.save()
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
   return res.status(200).json({ success: true, pipe });
 };
 
-const updateTitle = async (req, res, next) => {
+const updatePipeTitle = async (req, res, next) => {
   const { id, newTitle } = req.body;
   try {
     const pipe = await P.getPipeById(id);
-
     if (pipe.title === newTitle || pipe.title === 'New Leads') {
       return res.status(200).json({ success: true, updatedPipe: pipe });
     }
 
     pipe.title = newTitle;
     await pipe.save();
-
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
@@ -111,6 +150,7 @@ const getLead = async (req, res, next) => {
   try {
     lead = await P.getLeadById(id)
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
@@ -119,10 +159,11 @@ const getLead = async (req, res, next) => {
 
 module.exports = {
   getAllPipelines,
-  getAllPipes,
+  getPipelineData,
   createPipe,
   createLead,
   moveLead,
-  updateTitle,
+  updatePipeTitle,
   getLead,
+  movePipe
 };

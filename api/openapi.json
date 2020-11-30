@@ -273,7 +273,7 @@
         ],
         "summary": "Get all pipes.",
         "description": "Get all pipes",
-        "operationId": "getAllPipes",
+        "operationId": "getPipelineData",
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -291,7 +291,29 @@
         ],
         "summary": "User profile retrieval",
         "description": "Retrieve user's self profile information",
-        "operationId": "updateTitle",
+        "operationId": "updatePipeTitle",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/move/pipe": {
+      "post": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "movePipe",
         "responses": {
           "200": {
             "description": "Successful operation",

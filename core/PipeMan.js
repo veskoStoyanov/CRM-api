@@ -11,10 +11,15 @@ const PipeMan = {
         return Pipeline.findById(id);
    },
   
-    getAllPipes(pipeline) {
-        return Pipe
-            .find({pipeline})
-            .populate('leads');    
+   getPipelineDataById(id) {
+        return Pipeline.findById(id)
+        .populate({ 
+            path: 'pipes',
+            populate: {
+              path: 'leads',
+              model: 'Lead'
+            } 
+         })
     },
 
     getPipeById(id) {
