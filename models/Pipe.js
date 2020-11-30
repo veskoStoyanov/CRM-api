@@ -1,26 +1,21 @@
 const mongoose = require('mongoose');
 
-const PipeShema = new mongoose.Schema({
-  
-})
-
-const PipeLineSchema = new mongoose.Schema({
+const PipeSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  name: {
-    type: String,
-    required: true,
+  pipeline: {
+    type: 'ObjectId',
+    ref: 'Pipeline',
   },
   leads: [{
     type: 'ObjectId',
     ref: 'Lead',
     default: []
   }],
-  pipe: PipeShema
 });
 
-const Pipe = mongoose.model('Pipe', PipeLineSchema);
+const Pipe = mongoose.model('Pipe', PipeSchema);
 
 module.exports = Pipe;

@@ -158,12 +158,92 @@
         }
       }
     },
+    "/pipelines/{id}": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Login user",
+        "description": "Login user endpoint",
+        "operationId": "getAllPipelines",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/lead/{id}": {
+      "get": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "getLead",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "summary": "Logout user",
+        "description": "Logout the currently logged user.",
+          "tags": [
+          "lead"
+        ],
+        "operationId": "createLead",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/move/lead": {
+      "post": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "moveLead",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
     "/pipe": {
       "post": {
         "tags": [
           "pipe"
         ],
-        "summary": "Login user",
+        "summary": "Create pipe",
         "description": "Login user endpoint",
         "operationId": "createPipe",
         "requestBody": {
@@ -186,62 +266,20 @@
         }
       }
     },
-    "/pipe/{pipeName}": {
+    "/pipes/{id}": {
       "get": {
         "tags": [
           "pipe"
         ],
         "summary": "Get all pipes.",
         "description": "Get all pipes",
-        "operationId": "getPipes",
+        "operationId": "getAllPipes",
         "responses": {
           "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {}
             }
-          }
-        }
-      }
-    },
-    "/lead/{pipeName}": {
-      "post": {
-        "summary": "Logout user",
-        "description": "Logout the currently logged user.",
-          "tags": [
-          "user"
-        ],
-        "operationId": "createLead",
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {}
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/pipe/lead/move": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "User profile retrieval",
-        "description": "Retrieve user's self profile information",
-        "operationId": "moveLead",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {}
           }
         }
       }
