@@ -17,77 +17,152 @@ const createVehicle = async (req, res, next) => {
 };
 
 const getVehicles = async (req, res, next) => {
-    let vehicles = null;
-    try {
-      vehicles = await LM.getAllVehicles();
-    } catch (e) {
-      console.log(e);
-      return res.status(400).json({ success: false, errors: [''] });
-    }
-  
-    return res.status(200).json({ success: true, vehicles });
-  };
+  let vehicles = null;
+  try {
+    vehicles = await LM.getAllVehicles();
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
 
-  const getOneVehicle = async (req, res, next) => {
-      const {id} = req.params;
-    let vehicle = null;
-    try {
-      vehicle = await LM.getVehicleById(id);
-    } catch (e) {
-      console.log(e);
-      return res.status(400).json({ success: false, errors: [''] });
-    }
-    
-    return res.status(200).json({ success: true, vehicle });
-  };
+  return res.status(200).json({ success: true, vehicles });
+};
 
-  const updateVehicle = async (req, res, next) => {
-    const { id } = req.params;
-    const updatedData = req.body;
-    let vehicle = null;
-    try {
-        vehicle = await LM.getVehicleById(id);
-  
-      Object.keys(updatedData)
-        .forEach(key => {
-            vehicle[key] = updatedData[key];
-        });
-  
+const getOneVehicle = async (req, res, next) => {
+  const { id } = req.params;
+  let vehicle = null;
+  try {
+    vehicle = await LM.getVehicleById(id);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, vehicle });
+};
+
+const updateVehicle = async (req, res, next) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  let vehicle = null;
+  try {
+    vehicle = await LM.getVehicleById(id);
+
+    Object.keys(updatedData)
+      .forEach(key => {
+        vehicle[key] = updatedData[key];
+      });
+
+    await vehicle.save();
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, vehicle });
+};
+
+const deleteVehicle = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await LM.deleteVehicle(id)
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true });
+};
+
+// Policy
+const createPolicy = async (req, res, next) => {
+  let policy = null;
+  try {
+    policy = await LM.createPolicy({})
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, policy });
+};
+
+const getPolicies = async (req, res, next) => {
+  let policies = null;
+  try {
+    policies = await LM.getAllPolicies();
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, policies });
+};
+
+const getOnePolicy = async (req, res, next) => {
+  const { id } = req.params;
+  let policy = null;
+  try {
+    policy = await LM.getPolicyById(id);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, policy });
+};
+
+const updatePolicy = async (req, res, next) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  let policy = null;
+  try {
+    policy = await LM.getPolicyById(id);
+
+    Object.keys(updatedData)
+      .forEach(key => {
+        policy[key] = updatedData[key];
+      });
+
+    await policy.save();
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, policy });
+};
+
+const deletePolicy = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const policy = await LM.getPolicyById(id);
+    const vehicle = await LM.getVehicleById(policy.vehicle);
+    if (vehicle) {
+      const index = vehicle.policies.indexOf(id);
+      vehicle.policies.splice(index, 1);
       await vehicle.save();
-    } catch (e) {
-      console.log(e);
-      return res.status(400).json({ success: false, errors: [''] });
     }
-  
-    return res.status(200).json({ success: true, vehicle });
-  };
-  
-  const deleteVehicle = async (req, res) => {
-    const { id } = req.params;
-    try {
-      const vehicle = await LM.getVehicleById(id);
+      
+    await LM.deletePolicy(id)
 
-      for (let i = 0; i < vehicle.leads.length; i++) {
-        const lead = await PM.getLeadById(vehicle.leads[i]);
-        lead.vehicle = '';
-        await lead.save();
-      }
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
 
-      await LM.deleteVehicle(id)
-     
-    } catch (e) {
-      console.log(e);
-      return res.status(400).json({ success: false, errors: [''] });
-    }
-  
-    return res.status(200).json({ success: true });
-  };
-
+  return res.status(200).json({ success: true });
+};
 
 module.exports = {
-    createVehicle,
-    getVehicles,
-    getOneVehicle,
-    updateVehicle,
-    deleteVehicle
+  createVehicle,
+  getVehicles,
+  getOneVehicle,
+  updateVehicle,
+  deleteVehicle,
+  createPolicy,
+  getPolicies,
+  getOnePolicy,
+  updatePolicy,
+  deletePolicy
 };

@@ -11,6 +11,11 @@ const Vehiclechema = new mongoose.Schema({
     ref: 'Lead',
     default: []
   }],
+  policies: [{
+    type: 'ObjectId',
+    ref: 'Policy',
+    default: []
+  }],
 });
 
 const Vehicle = mongoose.model('Vehicle', Vehiclechema);
