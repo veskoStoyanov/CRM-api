@@ -4,15 +4,31 @@ const P = require('../core/PipeMan');
 const Auth = require('../core/Auth');
 
 // Pipeline and Pipe
+const createPipeline = async (req, res, next) => {
+  const user = '5fc63894aaffc114c098fc8a'
+  const data = { ...req.body, user};
+  let pipeline = null;
+  try {
+    pipeline = await P.createPipeline(data);
+    const userInfo = await Auth.getById(user);
+    userInfo.pipelines.push(pipeline.id);
+    await userInfo.save();
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true, pipeline });
+};
 
 // Get all pipelines for User
 const getAllPipelines = async (req, res, next) => {
-  const { id } = req.params;
+  const id  = '5fc63894aaffc114c098fc8a';
   let pipelines = [];
   try {
     const user = await Auth
-    .getById(id)
-    .populate('pipelines');
+      .getById(id)
+      .populate('pipelines');
 
     pipelines = user.pipelines;
   } catch (e) {
@@ -37,6 +53,33 @@ const getPipelineData = async (req, res, next) => {
   }
 
   return res.status(200).json({ success: true, pipes });
+};
+
+const deletePipeline = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const userId = '5fc63894aaffc114c098fc8a';
+  try {
+    const user = await Auth.getById(userId);
+    const pipelineIndex = user.pipelines.indexOf(id);
+    user.pipelines.splice(pipelineIndex, 1);
+    await user.save();
+    const pipes = await P.getPipesByPipeline(id);
+
+    const length = pipes.length;
+    for (let i = 0; i < length; i++) {
+      await P.deleteManyLeads(pipes[i].leads);
+      console.log(pipes[i].leads);
+      await P.deletePipe(pipes[i]._id);
+    }
+   
+    await P.deletePipeline(id);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true });
 };
 
 const createPipe = async (req, res, next) => {
@@ -66,8 +109,7 @@ const movePipe = async (req, res, next) => {
   let pipes = null;
   try {
     pipeline = await P.getPipelineDataById(pipelineId);
-
-    if (sourceIndex === 0 || destinationIndex === 0) {
+    if (sourceIndex === 0 && destinationIndex === 0) {
       return res.status(200).json({ success: true, pipes: pipeline.pipes });
     }
 
@@ -81,6 +123,25 @@ const movePipe = async (req, res, next) => {
   }
 
   return res.status(200).json({ success: true, pipes });
+};
+
+const deletePipe = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pipe = await P.getPipeById(id);
+    await P.deleteManyLeads(pipe.leads);
+    const pipeline = await P.getPipelineById(pipe.pipeline);
+    const index = pipeline.pipes.indexOf(id);
+    pipeline.pipes.splice(index, 1);
+    console.log(pipeline);
+    await pipeline.save()
+    await P.deletePipe(id);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ success: false, errors: [''] });
+  }
+
+  return res.status(200).json({ success: true });
 };
 
 const updatePipeTitle = async (req, res, next) => {
@@ -101,7 +162,6 @@ const updatePipeTitle = async (req, res, next) => {
 
   return res.status(200).json({ success: true, updatedPipe: pipe });
 };
-
 // Lead
 
 const getLead = async (req, res, next) => {
@@ -118,7 +178,7 @@ const getLead = async (req, res, next) => {
 };
 
 const createLead = async (req, res, next) => {
-  const user = '5fc404268c42ba2b7cdfbb6d';
+  const user = '5fc63894aaffc114c098fc8a';
   const { pipelineId } = req.body;
   let lead = null;
   try {
@@ -171,7 +231,7 @@ const deleteLead = async (req, res) => {
     return res.status(400).json({ success: false, errors: [''] });
   }
 
-  return res.status(200).json({ success: true});
+  return res.status(200).json({ success: true });
 };
 
 const moveLead = async (req, res, next) => {
@@ -210,6 +270,7 @@ const moveLead = async (req, res, next) => {
 };
 
 module.exports = {
+  createPipeline,
   getAllPipelines,
   getPipelineData,
   createPipe,
@@ -219,5 +280,7 @@ module.exports = {
   getLead,
   movePipe,
   updateLead,
-  deleteLead
+  deleteLead,
+  deletePipe,
+  deletePipeline
 };

@@ -158,6 +158,24 @@
         }
       }
     },
+    "/pipeline": {
+      "post": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Login user",
+        "description": "Login user endpoint",
+        "operationId": "createPipeline",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
     "/pipelines/{id}": {
       "get": {
         "tags": [
@@ -172,6 +190,140 @@
             "content": {
               "application/json": {}
             }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Login user",
+        "description": "Login user endpoint",
+        "operationId": "deletePipeline",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/pipe": {
+      "post": {
+        "tags": [
+          "pipe"
+        ],
+        "summary": "Create pipe",
+        "description": "Login user endpoint",
+        "operationId": "createPipe",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+               "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/pipe/delete/{id}": {
+      "post": {
+        "tags": [
+          "pipe"
+        ],
+        "summary": "Create pipe",
+        "description": "Login user endpoint",
+        "operationId": "deletePipe",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+               "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/pipes/{id}": {
+      "get": {
+        "tags": [
+          "pipe"
+        ],
+        "summary": "Get all pipes.",
+        "description": "Get all pipes",
+        "operationId": "getPipelineData",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/pipe/title": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "updatePipeTitle",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/move/pipe": {
+      "post": {
+        "tags": [
+          "lead"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "movePipe",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
           }
         }
       }
@@ -282,96 +434,6 @@
         "summary": "User profile retrieval",
         "description": "Retrieve user's self profile information",
         "operationId": "moveLead",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/pipe": {
-      "post": {
-        "tags": [
-          "pipe"
-        ],
-        "summary": "Create pipe",
-        "description": "Login user endpoint",
-        "operationId": "createPipe",
-        "requestBody": {
-          "description": "Created user object",
-          "content": {
-            "application/json": {
-              "schema": {
-               "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/pipes/{id}": {
-      "get": {
-        "tags": [
-          "pipe"
-        ],
-        "summary": "Get all pipes.",
-        "description": "Get all pipes",
-        "operationId": "getPipelineData",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/pipe/title": {
-      "put": {
-        "tags": [
-          "user"
-        ],
-        "summary": "User profile retrieval",
-        "description": "Retrieve user's self profile information",
-        "operationId": "updatePipeTitle",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/move/pipe": {
-      "post": {
-        "tags": [
-          "lead"
-        ],
-        "summary": "User profile retrieval",
-        "description": "Retrieve user's self profile information",
-        "operationId": "movePipe",
         "responses": {
           "200": {
             "description": "Successful operation",

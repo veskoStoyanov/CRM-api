@@ -22,29 +22,45 @@ const PipeMan = {
             })
     },
 
+    deletePipeline(_id) {
+        return Pipeline.deleteOne({ _id });
+    },
+
     getPipeById(id) {
         return Pipe.findById(id);
     },
 
     getPipeByLead(id) {
-       return  Pipe.findById(id)
+       return Pipe.findById(id);
     },
 
+    getPipesByPipeline(pipeline) {
+        return Pipe.find({pipeline});
+     },
+
     createPipe(data) {
-        return Pipe.create(data)
+        return Pipe.create(data);
+    },
+
+    deletePipe(_id) {
+        return Pipe.deleteOne({ _id });
     },
 
     createLead(data) {
-        return Lead.create(data)
+        return Lead.create(data);
     },
 
     deleteLead(_id) {
-        return Lead.deleteOne({ _id })
+        return Lead.deleteOne({ _id });
     },
 
     getLeadById(id) {
-        return Lead.findById(id)
+        return Lead.findById(id);
     },
+
+    deleteManyLeads (leads) {
+        return leads.map(async id => await this.deleteLead(id))
+    }
 }
 
 module.exports = PipeMan;
