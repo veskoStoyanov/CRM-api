@@ -9,13 +9,13 @@ const LeadSchema = new mongoose.Schema({
    default : 0,
     type: Number
   },
-  user: {
-    type: 'ObjectId',
-    ref: 'User'
-  },
   pipe: {
     type: 'ObjectId',
     ref: 'Pipe'
+  },
+  vehicle: {
+    type: 'ObjectId',
+    ref: 'Vehicle'
   }
 });
 

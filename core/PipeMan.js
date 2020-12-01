@@ -3,6 +3,10 @@ const Lead = require('../models/Lead');
 const Pipeline = require('../models/Pipeline');
 
 const PipeMan = {
+    getAllPipelines() {
+        return Pipeline.find();
+    },
+    
     getPipelineById(id) {
         return Pipeline.findById(id);
     },

@@ -5,8 +5,7 @@ const Auth = require('../core/Auth');
 
 // Pipeline and Pipe
 const createPipeline = async (req, res, next) => {
-  const user = '5fc63894aaffc114c098fc8a'
-  const data = { ...req.body, user};
+  const data = req.body;
   let pipeline = null;
   try {
     pipeline = await P.createPipeline(data);
@@ -23,14 +22,9 @@ const createPipeline = async (req, res, next) => {
 
 // Get all pipelines for User
 const getAllPipelines = async (req, res, next) => {
-  const id  = '5fc63894aaffc114c098fc8a';
   let pipelines = [];
   try {
-    const user = await Auth
-      .getById(id)
-      .populate('pipelines');
-
-    pipelines = user.pipelines;
+    pipelines = await P.getAllPipelines();
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -57,13 +51,7 @@ const getPipelineData = async (req, res, next) => {
 
 const deletePipeline = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
-  const userId = '5fc63894aaffc114c098fc8a';
   try {
-    const user = await Auth.getById(userId);
-    const pipelineIndex = user.pipelines.indexOf(id);
-    user.pipelines.splice(pipelineIndex, 1);
-    await user.save();
     const pipes = await P.getPipesByPipeline(id);
 
     const length = pipes.length;
@@ -133,7 +121,6 @@ const deletePipe = async (req, res) => {
     const pipeline = await P.getPipelineById(pipe.pipeline);
     const index = pipeline.pipes.indexOf(id);
     pipeline.pipes.splice(index, 1);
-    console.log(pipeline);
     await pipeline.save()
     await P.deletePipe(id);
   } catch (e) {
@@ -149,7 +136,7 @@ const updatePipeTitle = async (req, res, next) => {
   let pipe = null;
   try {
     pipe = await P.getPipeById(id);
-    if (pipe.title === newTitle || pipe.title === 'New Leads') {
+    if (pipe.title === newTitle) {
       return res.status(200).json({ success: true, updatedPipe: pipe });
     }
 
@@ -178,11 +165,10 @@ const getLead = async (req, res, next) => {
 };
 
 const createLead = async (req, res, next) => {
-  const user = '5fc63894aaffc114c098fc8a';
   const { pipelineId } = req.body;
   let lead = null;
   try {
-    lead = await P.createLead({ user });
+    lead = await P.createLead({});
     const pipeline = await P.getPipelineById(pipelineId);
     const pipe = await P.getPipeById(pipeline.pipes[0]);
     pipe.leads.push(lead);
