@@ -2,6 +2,7 @@ const passport = require('passport');
 const T = require('../core/Tools');
 const P = require('../core/PipeMan');
 const Auth = require('../core/Auth');
+const CM = require('../core/ContactMan');
 
 // Pipeline and Pipe
 const createPipeline = async (req, res, next) => {
@@ -10,6 +11,7 @@ const createPipeline = async (req, res, next) => {
   try {
     pipeline = await P.createPipeline(data);
     const userInfo = await Auth.getById(user);
+
     userInfo.pipelines.push(pipeline.id);
     await userInfo.save();
   } catch (e) {
@@ -29,7 +31,7 @@ const getAllPipelines = async (req, res, next) => {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
-  console.log(pipelines);
+
   return res.status(200).json({ success: true, pipelines });
 };
 
@@ -57,7 +59,6 @@ const deletePipeline = async (req, res) => {
     const length = pipes.length;
     for (let i = 0; i < length; i++) {
       await P.deleteManyLeads(pipes[i].leads);
-      console.log(pipes[i].leads);
       await P.deletePipe(pipes[i]._id);
     }
    
@@ -76,6 +77,7 @@ const createPipe = async (req, res, next) => {
   try {
     const pipeline = await P.getPipelineById(pipelineId);
     pipe = await P.createPipe({ title, pipeline: pipelineId });
+
     pipeline.pipes.push(pipe);
     await pipeline.save()
   } catch (e) {
@@ -103,6 +105,7 @@ const movePipe = async (req, res, next) => {
 
     const pipe = pipeline.pipes.splice(sourceIndex, 1)[0];
     pipeline.pipes.splice(destinationIndex, 0, pipe);
+
     await pipeline.save();
     pipes = pipeline.pipes
   } catch (e) {
@@ -118,9 +121,11 @@ const deletePipe = async (req, res) => {
   try {
     const pipe = await P.getPipeById(id);
     await P.deleteManyLeads(pipe.leads);
+
     const pipeline = await P.getPipelineById(pipe.pipeline);
     const index = pipeline.pipes.indexOf(id);
     pipeline.pipes.splice(index, 1);
+
     await pipeline.save()
     await P.deletePipe(id);
   } catch (e) {
@@ -136,6 +141,7 @@ const updatePipeTitle = async (req, res, next) => {
   let pipe = null;
   try {
     pipe = await P.getPipeById(id);
+
     if (pipe.title === newTitle) {
       return res.status(200).json({ success: true, updatedPipe: pipe });
     }
@@ -170,9 +176,11 @@ const createLead = async (req, res, next) => {
   try {
     lead = await P.createLead({});
     const pipeline = await P.getPipelineById(pipelineId);
+
     const pipe = await P.getPipeById(pipeline.pipes[0]);
     pipe.leads.push(lead);
     pipe.save();
+
     lead.pipe = pipe._id;
     await lead.save();
   } catch (e) {
@@ -209,8 +217,17 @@ const deleteLead = async (req, res) => {
   try {
     const lead = await P.getLeadById(id);
     const pipe = await P.getPipeByLead(lead.pipe);
+
     const index = pipe.leads.indexOf(id);
     pipe.leads.splice(index, 1);
+    const contact = await PM.getLeadById(lead);
+
+    if(contact) {
+      const contactIndex = contact.leads.indexOf(lead._id);
+      contact.leads.splice(contactIndex, 1);
+      await contact.save();
+    }
+   
     await P.deleteLead(id);
   } catch (e) {
     console.log(e);

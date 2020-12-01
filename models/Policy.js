@@ -14,7 +14,11 @@ const Policychema = new mongoose.Schema({
   vehicle: {
     type: 'ObjectId',
     ref: 'Vehicle',
-  }   
+  },
+  contact: {
+    type: 'ObjectId',
+    ref: 'Contact'
+  },
 });
 
 const Policy = mongoose.model('Policy', Policychema);

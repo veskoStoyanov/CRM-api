@@ -663,6 +663,114 @@
           }
         }
       }
+    },
+    "/contacts": {
+      "get": {
+        "tags": [
+          "contact"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "getAllContacts",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/contact": {
+      "post": {
+        "tags": [
+          "contact"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "createContact",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/contact/{id}": {
+      "get": {
+        "tags": [
+          "contact"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "getOneContact",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "contact"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "updateContact",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/contact/delete/{id}": {
+      "post": {
+        "tags": [
+          "contact"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "deleteContact",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {

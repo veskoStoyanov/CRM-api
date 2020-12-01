@@ -6,7 +6,7 @@ const loginUser = async (req, res, next) => {
 		if (err) { return next(err); }
 
 		if (!user) { return res.status(400).json({ errors: [err] }); }
-
+		
 		try {
 			await T.sendLoginEmail(user);
 		} catch (e) {

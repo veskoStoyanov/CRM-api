@@ -1,7 +1,7 @@
 const passport = require('passport');
 const T = require('../core/Tools');
 const LM = require('../core/ListMan');
-const PM = require('../core/PipeMan');
+const CM = require('../core/ContactMan');
 
 // Vehicle
 const createVehicle = async (req, res, next) => {
@@ -65,6 +65,14 @@ const updateVehicle = async (req, res, next) => {
 const deleteVehicle = async (req, res) => {
   const { id } = req.params;
   try {
+    const vehicle = await LM.getVehicleById(id);
+    const contact = await CM.getContactById(vehicle.contact);
+    if (contact) {
+      const index = contact.vehicles.indexOf(lead._id);
+      contact.vehicles.splice(index, 1);
+      await contact.save();
+    }
+
     await LM.deleteVehicle(id)
   } catch (e) {
     console.log(e);
@@ -138,14 +146,21 @@ const deletePolicy = async (req, res) => {
   try {
     const policy = await LM.getPolicyById(id);
     const vehicle = await LM.getVehicleById(policy.vehicle);
+
     if (vehicle) {
       const index = vehicle.policies.indexOf(id);
       vehicle.policies.splice(index, 1);
       await vehicle.save();
     }
+
+    const contact = await CM.getContactById(policy.contact);
+    if (contact) {
+      const index = contact.policies.indexOf(id);
+      contact.policies.splice(index, 1);
+      await contact.save();
+    }
       
     await LM.deletePolicy(id)
-
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });

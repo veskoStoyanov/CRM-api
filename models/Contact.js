@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const VehicleSchema = new mongoose.Schema({
+const ContactSchema = new mongoose.Schema({
   name: {
     type: String,
-    default: 'New Vehicle',
+    default: 'New Contact',
   },
-  age: Number,
+  email: String,
   leads: [{
     type: 'ObjectId',
     ref: 'Lead',
@@ -16,12 +16,13 @@ const VehicleSchema = new mongoose.Schema({
     ref: 'Policy',
     default: []
   }],
-  contact: {
+  vehicles: [{
     type: 'ObjectId',
-    ref: 'Contact'
-  },
+    ref: 'Vehicle',
+    default: []
+  }],
 });
 
-const Vehicle = mongoose.model('Vehicle', VehicleSchema);
+const Contact = mongoose.model('Contact', ContactSchema);
 
-module.exports = Vehicle;
+module.exports = Contact;

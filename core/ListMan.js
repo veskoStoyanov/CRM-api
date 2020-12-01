@@ -1,5 +1,4 @@
 const Vehicle = require('../models/Vehicle');
-const policy = require('../models/Policy');
 const Policy = require('../models/Policy');
 
 const ListMan = {
