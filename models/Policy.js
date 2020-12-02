@@ -6,11 +6,10 @@ const Policychema = new mongoose.Schema({
     default: 'New Policy',
   },
   price: Number,
-  leads: [{
+  leads: {
     type: 'ObjectId',
-    ref: 'Lead',
-    default: []
-  }],
+    ref: 'Lead'
+  },
   vehicle: {
     type: 'ObjectId',
     ref: 'Vehicle',

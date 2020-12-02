@@ -1,6 +1,9 @@
-const nodemailer = require("nodemailer");
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const jwt = require('jsonwebtoken');
-let transporter = nodemailer.createTransport({
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
   host: "neon.superhosting.bg",
   port: 587,
   secure: false,
@@ -9,6 +12,8 @@ let transporter = nodemailer.createTransport({
     pass: process.env.SMT_PASS
   }
 });
+
+const defaultFields = ['name', '_id'];
 
 const Tools = {
   generateToken (data) {
@@ -27,9 +32,40 @@ const Tools = {
     //   from: process.env.EMAIL_FROM,
     //   to: email,
     //   subject: 'Account activation link',
+
     //   html: `<hr/><h1>Please use the following link <a href=${process.env.CLIENT_URL}/login/activate/${token}>${process.env.CLIENT_URL}</a> to activate your account</h1><hr/>`
     // })
-  }
+  },
+
+  removePropsHelper (obj, fields) {
+		const alteredObj = {};
+		Object.keys(obj)
+			.forEach(key => {
+				if (fields.includes(key)) {
+					if (typeof obj[key] === 'object') {
+						obj[key] = this.removeProps(obj[key], fields);
+					}
+
+					alteredObj[key] = obj[key];
+				}	
+			});
+			
+		return alteredObj;
+	},
+
+	removeProps(data, fields = defaultFields) {
+		if (data instanceof mongoose.Model) {
+			data = data.toObject();	
+		}
+		
+		if (Array.isArray(data)) {
+			return data.map(el => this.removeProps(el, fields));
+		} else if (data != null && data.constructor.name === "Object") {
+			return this.removePropsHelper(data, fields);	
+		}
+		
+		return data;
+	},
 }
 
 module.exports = Tools;

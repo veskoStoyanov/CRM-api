@@ -18,6 +18,7 @@ const getAllContacts = async (req, res, next) => {
   let contacts = null;
   try {
     contacts = await CM.getAllContacts();
+    contacts = T.removeProps(contacts);
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });

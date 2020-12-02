@@ -1,8 +1,10 @@
 const passport = require('passport');
 const T = require('../core/Tools');
 const P = require('../core/PipeMan');
-const Auth = require('../core/Auth');
 const CM = require('../core/ContactMan');
+const LM = require('../core/ListMan');
+
+const props = ['title', 'leads', 'name', '_id'];
 
 // Pipeline and Pipe
 const createPipeline = async (req, res, next) => {
@@ -10,10 +12,6 @@ const createPipeline = async (req, res, next) => {
   let pipeline = null;
   try {
     pipeline = await P.createPipeline(data);
-    const userInfo = await Auth.getById(user);
-
-    userInfo.pipelines.push(pipeline.id);
-    await userInfo.save();
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -27,6 +25,7 @@ const getAllPipelines = async (req, res, next) => {
   let pipelines = [];
   try {
     pipelines = await P.getAllPipelines();
+    pipelines = T.removeProps(pipelines);
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -35,7 +34,6 @@ const getAllPipelines = async (req, res, next) => {
   return res.status(200).json({ success: true, pipelines });
 };
 
-
 // Get all pipes and leads for a Pipeline
 const getPipelineData = async (req, res, next) => {
   const { id } = req.params;
@@ -43,6 +41,7 @@ const getPipelineData = async (req, res, next) => {
   try {
     const pipelineData = await P.getPipelineDataById(id);
     pipes = pipelineData.pipes;
+    pipes = T.removeProps(pipes, props);
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -61,7 +60,7 @@ const deletePipeline = async (req, res) => {
       await P.deleteManyLeads(pipes[i].leads);
       await P.deletePipe(pipes[i]._id);
     }
-   
+
     await P.deletePipeline(id);
   } catch (e) {
     console.log(e);
@@ -107,7 +106,7 @@ const movePipe = async (req, res, next) => {
     pipeline.pipes.splice(destinationIndex, 0, pipe);
 
     await pipeline.save();
-    pipes = pipeline.pipes
+    pipes = T.removeProps(pipeline.pipes, props);
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -178,6 +177,10 @@ const createLead = async (req, res, next) => {
     const pipeline = await P.getPipelineById(pipelineId);
 
     const pipe = await P.getPipeById(pipeline.pipes[0]);
+    if (!pipe) {
+      return res.status(400).json({ success: false, errors: [''] });
+    }
+  
     pipe.leads.push(lead);
     pipe.save();
 
@@ -220,14 +223,22 @@ const deleteLead = async (req, res) => {
 
     const index = pipe.leads.indexOf(id);
     pipe.leads.splice(index, 1);
-    const contact = await PM.getLeadById(lead);
+    await pipe.save();
 
-    if(contact) {
-      const contactIndex = contact.leads.indexOf(lead._id);
+    const contact = await CM.getContactById(lead.contact);
+    if (contact) {
+      const contactIndex = contact.leads.indexOf(id);
       contact.leads.splice(contactIndex, 1);
       await contact.save();
     }
-   
+
+    const vehicle = await LM.getVehicleById(lead.vehicle);
+    if (vehicle) {
+      const vehicleIndex = vehicle.leads.indexOf(id);
+      vehicle.leads.splice(contactIndex, 1);
+      await vehicle.save();
+    }
+
     await P.deleteLead(id);
   } catch (e) {
     console.log(e);

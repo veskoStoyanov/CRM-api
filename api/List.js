@@ -20,6 +20,7 @@ const getVehicles = async (req, res, next) => {
   let vehicles = null;
   try {
     vehicles = await LM.getAllVehicles();
+    vehicles = T.removeProps(vehicles);
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -99,6 +100,7 @@ const getPolicies = async (req, res, next) => {
   let policies = null;
   try {
     policies = await LM.getAllPolicies();
+    policies = T.removeProps(policies);
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
