@@ -21,6 +21,10 @@ const LeadSchema = new mongoose.Schema({
     type: 'ObjectId',
     ref: 'Contact'
   },
+  fields: [{
+      type: 'ObjectId',
+      ref: 'Field'
+    }]
 });
 
 const Lead = mongoose.model('Lead', LeadSchema);

@@ -21,6 +21,11 @@ const ContactSchema = new mongoose.Schema({
     ref: 'Vehicle',
     default: []
   }],
+  fields: [{
+    type: 'ObjectId',
+    ref: 'Field',
+    default: []
+  }],
 });
 
 const Contact = mongoose.model('Contact', ContactSchema);

@@ -20,6 +20,11 @@ const VehicleSchema = new mongoose.Schema({
     type: 'ObjectId',
     ref: 'Contact'
   },
+  fields: [{
+      type: 'ObjectId',
+      ref: 'Field',
+      default: []
+    }]
 });
 
 const Vehicle = mongoose.model('Vehicle', VehicleSchema);
