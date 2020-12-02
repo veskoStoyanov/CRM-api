@@ -4,8 +4,8 @@ const User = require('./User');
 const Pipeline = require('./Pipeline');
 const List = require('./List');
 const Contact = require('./Contact');
-const Core = require('./Core');
-const apiHandlers = { ...User, ...Pipeline, ...List, ...Contact, ...Core };
+const Field = require('./Field');
+const apiHandlers = { ...User, ...Pipeline, ...List, ...Contact, ...Field };
 const apiSpecFile = require('./openapi.json');
 
 module.exports = app => {

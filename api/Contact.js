@@ -1,6 +1,7 @@
 const passport = require('passport');
 const T = require('../core/Tools');
 const CM = require('../core/ContactMan');
+const FM = require('../core/FieldMan');
 
 const createContact = async (req, res, next) => {
   let contact = null;
@@ -30,14 +31,19 @@ const getAllContacts = async (req, res, next) => {
 const getOneContact = async (req, res, next) => {
   const { id } = req.params;
   let contact = null;
+  let fields = null;
   try {
-    contact = await CM.getContactById(id);
+    contact = await CM.getContactById(id)
+    .populate('fields');
+
+    fields = await FM.getAllFields()
+
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
-  return res.status(200).json({ success: true, contact });
+  return res.status(200).json({ success: true, contact, fields });
 };
 
 const updateContact = async (req, res, next) => {
