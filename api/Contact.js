@@ -6,7 +6,17 @@ const FM = require('../core/FieldMan');
 const createContact = async (req, res, next) => {
   let contact = null;
   try {
-    contact = await CM.createContact({})
+    const system = await CM.getContactByData({ system: true });
+    if(!system) {
+      contact = await CM.createContact({ system: true, name: 'SETUP' });
+    } else {
+      const defaultData = {
+        system: false,
+        fields: system.fields
+      }
+
+      contact = await CM.createContact(defaultData);
+    }
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -36,7 +46,18 @@ const getOneContact = async (req, res, next) => {
     contact = await CM.getContactById(id)
     .populate('fields');
 
-    fields = await FM.getAllFields()
+    const fieldsInfo = await FM.getAllFields();
+  
+    fields = fieldsInfo.reduce((acc, curr) => {
+      const field = contact.fields.find(x => x.name === curr.name);
+      if (!field) {
+        acc.push(curr);
+      }
+
+      return acc;
+    }, [])
+
+    console.log(fields)
 
   } catch (e) {
     console.log(e);
@@ -47,16 +68,16 @@ const getOneContact = async (req, res, next) => {
 };
 
 const updateContact = async (req, res, next) => {
+  // ?
   const { id } = req.params;
-  const updatedData = req.body;
+  const {fieldId, ...rest} = req.body;
+  console.log(id);
+  console.log(fieldId);
+  console.log(rest);
   let contact = null;
   try {
     contact = await CM.getContactById(id);
-
-    Object.keys(updatedData)
-      .forEach(key => {
-        contact[key] = updatedData[key];
-      });
+    const index = con
 
     await contact.save();
   } catch (e) {
@@ -80,7 +101,7 @@ const deleteContact = async (req, res) => {
 };
 
 module.exports = {
-    createContact,
+  createContact,
     getAllContacts,
     getOneContact,
     updateContact,

@@ -13,6 +13,10 @@ const ContactMan = {
         return Contact.findById(id)
     },
 
+    getContactByData(data) {
+        return Contact.findOne(data)
+    },
+
     deleteContact(_id) {
         return Contact.deleteOne({ _id });
     }

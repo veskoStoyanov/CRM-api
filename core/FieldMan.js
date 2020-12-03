@@ -6,11 +6,16 @@ const Handler = {
         const field = await Field.create(rest);
         const entity = await models[type].findById(entityId);
         entity.fields.push(field._id);
-        return entity.save();
+        await entity.save();
+        return field;
     },
 
     getAllFields() {
         return Field.find();
+    },
+
+    getFieldById(id) {
+        return Field.findById(id)
     },
 
     async bindField({ fieldId, entityId, type}) {

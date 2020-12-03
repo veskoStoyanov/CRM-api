@@ -3,9 +3,13 @@ const mongoose = require('mongoose');
 const FieldSchema = new mongoose.Schema({
   name: String,
   value: {
-    type: 'Mixed'
+    type: 'Mixed',
+    default: null
   },
-  type: String
+  type: {
+    type: String,
+    default: 'string'
+  }
 });
 
 const Field = mongoose.model('Field', FieldSchema);

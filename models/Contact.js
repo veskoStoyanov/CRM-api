@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const ContactSchema = new mongoose.Schema({
   name: {
     type: String,
-    default: 'New Contact',
+    default: 'DEFAULT',
   },
   email: String,
   leads: [{
@@ -26,6 +26,7 @@ const ContactSchema = new mongoose.Schema({
     ref: 'Field',
     default: []
   }],
+  system: Boolean
 });
 
 const Contact = mongoose.model('Contact', ContactSchema);
