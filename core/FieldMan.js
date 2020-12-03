@@ -49,6 +49,23 @@ const Handler = {
         entity.fields.splice(destinationIndex, 0, field);
 
         return entity.save()
+    },
+
+    async getBindedFields({entityId, type}) {
+        type = type[0].toUpperCase() + type.slice(1);
+        const entity = await models[type].findById(entityId)
+            .populate('fields');
+
+        const fieldsInfo = await this.getAllFields();
+
+        return fieldsInfo.reduce((acc, curr) => {
+            const field = entity.fields.find(x => x.name === curr.name);
+            if (!field) {
+                acc.push(curr);
+            }
+
+            return acc;
+        }, [])
     }
 };
 

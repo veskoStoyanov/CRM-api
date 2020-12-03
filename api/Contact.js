@@ -41,26 +41,15 @@ const getAllContacts = async (req, res, next) => {
 const getOneContact = async (req, res, next) => {
   const { id } = req.params;
   let contact = null;
-  let fields = null;
   try {
     contact = await CM.getContactById(id)
-    .populate('fields');
-
-    const fieldsInfo = await FM.getAllFields();
-    fields = fieldsInfo.reduce((acc, curr) => {
-      const field = contact.fields.find(x => x.name === curr.name);
-      if (!field) {
-        acc.push(curr);
-      }
-
-      return acc;
-    }, [])
+    .populate('fields');  
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
   }
 
-  return res.status(200).json({ success: true, contact, fields });
+  return res.status(200).json({ success: true, contact });
 };
 
 const updateContact = async (req, res, next) => {

@@ -56,9 +56,22 @@ const moveField = async (req, res, next) => {
     return res.status(200).json({ success: true, entity });
   };
 
+  const getBindedFields = async (req, res) => {
+    let fields = null;
+    try {
+        fields = await FM.getBindedFields(req.params);
+        console.log(fields);
+    } catch (e) {
+        console.log(e);
+    }
+
+    return res.status(200).json({ success: true, fields });
+  };
+
 module.exports = {
     addField,
     bindField,
     updateField,
-    moveField
+    moveField,
+    getBindedFields
 }
