@@ -24,7 +24,8 @@ const VehicleSchema = new mongoose.Schema({
       type: 'ObjectId',
       ref: 'Field',
       default: []
-    }]
+    }],
+    system: Boolean
 });
 
 const Vehicle = mongoose.model('Vehicle', VehicleSchema);

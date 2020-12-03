@@ -21,7 +21,8 @@ const Policychema = new mongoose.Schema({
   fields: [{
       type: 'ObjectId',
       ref: 'Field'
-    }]
+    }],
+    system: Boolean
 });
 
 const Policy = mongoose.model('Policy', Policychema);

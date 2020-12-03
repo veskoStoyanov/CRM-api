@@ -1,8 +1,7 @@
 const passport = require('passport');
 const T = require('../core/Tools');
 const P = require('../core/PipeMan');
-const CM = require('../core/ContactMan');
-const LM = require('../core/ListMan');
+const EM = require('../core/EntityMan')
 
 const props = ['title', 'leads', 'name', '_id'];
 
@@ -225,14 +224,14 @@ const deleteLead = async (req, res) => {
     pipe.leads.splice(index, 1);
     await pipe.save();
 
-    const contact = await CM.getContactById(lead.contact);
+    const contact = await EM.getEntityById(lead.contact, 'contact');
     if (contact) {
       const contactIndex = contact.leads.indexOf(id);
       contact.leads.splice(contactIndex, 1);
       await contact.save();
     }
 
-    const vehicle = await LM.getVehicleById(lead.vehicle);
+    const vehicle = await EM.getEntityById(lead.vehicle, 'product');
     if (vehicle) {
       const vehicleIndex = vehicle.leads.indexOf(id);
       vehicle.leads.splice(contactIndex, 1);

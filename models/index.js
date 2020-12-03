@@ -6,6 +6,7 @@ const Policy = require('./Policy');
 const User = require('./User');
 const Vehicle = require('./Vehicle');
 const Contact = require('./Contact');
+const Product = require('./Product')
 
 module.exports = {
     Field,
@@ -14,6 +15,6 @@ module.exports = {
     Pipeline,
     Policy,
     User,
-    Vehicle,
-    Contact
+    Contact,
+    Product
 };

@@ -1,7 +1,11 @@
 const Tools = require('./Tools');
-const Valid = require('./Valid');
+const EntityMan = require('./EntityMan');
+const PipeMan = require('./PipeMan');
+const FieldMan = require('./FieldMan');
 
 module.exports = {
     Tools,
-    Valid
+    EntityMan,
+    PipeMan,
+    FieldMan,
 }

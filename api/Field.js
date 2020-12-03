@@ -1,5 +1,4 @@
 const FM = require('../core/FieldMan');
-const CM = require('../core/ContactMan');
 
 const addField = async (req, res) => {
     let field = null;
@@ -28,6 +27,7 @@ const bindField = async (req, res) => {
 const updateField = async (req, res) => {
     const { id } = req.params;
     const {fieldId, ...rest} = req.body;
+    console.log(req.body);
     let field = null;
     try {
         field = await await FM.getFieldById(id);
@@ -47,7 +47,7 @@ const updateField = async (req, res) => {
 const moveField = async (req, res, next) => {
     let entity = null;
     try {
-        entity = await FM.moveField(req.body)
+        entity = await FM.moveField(req.body);
         console.log(entity);
     } catch (e) {
         console.log(e);
