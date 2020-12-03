@@ -47,7 +47,6 @@ const getOneContact = async (req, res, next) => {
     .populate('fields');
 
     const fieldsInfo = await FM.getAllFields();
-  
     fields = fieldsInfo.reduce((acc, curr) => {
       const field = contact.fields.find(x => x.name === curr.name);
       if (!field) {
@@ -56,9 +55,6 @@ const getOneContact = async (req, res, next) => {
 
       return acc;
     }, [])
-
-    console.log(fields)
-
   } catch (e) {
     console.log(e);
     return res.status(400).json({ success: false, errors: [''] });
@@ -71,13 +67,9 @@ const updateContact = async (req, res, next) => {
   // ?
   const { id } = req.params;
   const {fieldId, ...rest} = req.body;
-  console.log(id);
-  console.log(fieldId);
-  console.log(rest);
   let contact = null;
   try {
     contact = await CM.getContactById(id);
-    const index = con
 
     await contact.save();
   } catch (e) {

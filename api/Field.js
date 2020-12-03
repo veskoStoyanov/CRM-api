@@ -5,7 +5,6 @@ const addField = async (req, res) => {
     let field = null;
     try {
         field = await FM.addField(req.body);
-        console.log(field);
     } catch (e) {
       console.log(e);
       return res.status(400).json({ success: false, errors: [''] });
@@ -37,8 +36,6 @@ const updateField = async (req, res) => {
         });
        
        await field.save();
-
-       console.log(field)
     } catch (e) {
       console.log(e);
       return res.status(400).json({ success: false, errors: [''] });
@@ -47,8 +44,21 @@ const updateField = async (req, res) => {
     return res.status(200).json({ success: true, field });
 };
 
+const moveField = async (req, res, next) => {
+    let entity = null;
+    try {
+        entity = await FM.moveField(req.body)
+        console.log(entity);
+    } catch (e) {
+        console.log(e);
+    }
+
+    return res.status(200).json({ success: true, entity });
+  };
+
 module.exports = {
     addField,
     bindField,
-    updateField
+    updateField,
+    moveField
 }
