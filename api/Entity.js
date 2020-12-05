@@ -36,23 +36,22 @@ const getEntity = async (req, res, next) => {
     try {
         const fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity: type })
             .populate('fields');
-        console.log()
-
         entity = await EM.getEntityById(type, id);
-
-
-        const fields = [];
-        fieldOrder.fields.forEach(e => {
-            const field = entity.fields.find(x => x.name === e.name);
-            fields.push({
-                name: e.name,
-                value: field ? field.value : null
+        
+        if(fieldOrder) {
+            const fields = [];
+            fieldOrder.fields.forEach(e => {
+                const field = entity.fields.find(x => x.name === e.name);
+                fields.push({
+                    name: e.name,
+                    value: field ? field.value : null
+                });
             });
-        });
-
-        entity.fields = fields;
-        entity.markModified('fields');
-        entity.save();
+    
+            entity.fields = fields;
+            entity.markModified('fields');
+            entity.save();
+        }
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
@@ -87,7 +86,7 @@ const updateEntity = async (req, res) => {
 const deleteEntity = async (req, res) => {
     const { id, type } = req.params;
     try {
-        await EM.delete(type, id);
+        await EM.deleteRef(type, id);
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });

@@ -1,14 +1,18 @@
 const T = require('./Tools');
 const models = require('../models');
-const {
-    Product,
-    Contact,
-} = models;
-
 const defaultRemap = {
     lead: {
         forDelete: 'leads',
         modNames: ['contact', 'product', 'pipe',]
+    },
+    contact: {
+        forDelete: 'contacts',
+        modNames: []
+    },
+
+    product: {
+        forDelete: 'products',
+        modNames: [ 'contact' ]
     }
 }
 
@@ -47,18 +51,18 @@ const EntityMan = {
         return Model.deleteOne({ _id });
     },
 
-    async delete(type, id) {
+    async deleteRef(type, id) {
         const { modNames, forDelete } = defaultRemap[type]
-        const item = await this.getEntityById(type, id);
+        const entityToBeDelete = await this.getEntityById(type, id);
         const length = modNames.length;
         for (let i = 0; i < length; i++) {
-            const model = modNames[i];
+            const refModel = modNames[i];
 
-            if (item[model]) {
-                const entity = await this.getEntityById(model, item[model]);
-                if (entity) {
-                    entity[forDelete] = entity[forDelete].filter(x => x.toString() !== item._id.toString());
-                    entity.save();
+            if (entityToBeDelete[refModel]) {
+                const ferEntity = await this.getEntityById(refModel, entityToBeDelete[refModel]);
+                if (ferEntity) {
+                    ferEntity[forDelete] = ferEntity[forDelete].filter(x => x.toString() !== entityToBeDelete._id.toString());
+                    ferEntity.save();
                 }
             }
         }
