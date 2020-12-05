@@ -1,77 +1,68 @@
 const T = require('./Tools');
-const Product = require('../models/Product');
-const Contact = require('../models/Contact')
+const models = require('../models');
+const {
+    Product,
+    Contact,
+} = models;
+
+const defaultRemap = {
+    lead: {
+        forDelete: 'leads',
+        modNames: ['contact', 'product', 'pipe',]
+    }
+}
 
 const EntityMan = {
-    createEntity(data, type) {
-        const Model = T.getModel(type);
+    getModel(type) {
+        return models[type[0].toUpperCase() + type.slice(1)];
+    },
+    createEntity(type, data) {
+        const Model = this.getModel(type);
         return Model.create(data);
     },
 
     getEntities(type) {
-        const Model = T.getModel(type);
+        const Model = this.getModel(type);
         return Model.find();
     },
 
-    getEntityByData(data, type) {
-        const Model = T.getModel(type);
+    getEntitiesByData(type, data) {
+        const Model = this.getModel(type);
+        return Model.find(data);
+    },
+
+    getEntityByData(type, data) {
+        const Model = this.getModel(type);
         return Model.findOne(data);
     },
 
-    getEntityById(id, type) {
-        const Model = T.getModel(type);
+    getEntityById(type, id) {
+        const Model = this.getModel(type);
         return Model.findById(id);
     },
 
-    deleteEntity(id, type) {
-        return this[`delete${type[0].toUpperCase() + type.slice(1)}`](id, type);
+    deleteEntity(type, _id) {
+        const Model = this.getModel(type);
+        return Model.deleteOne({ _id });
     },
 
-    deleteContact(_id) {
-        return Contact.deleteOne({ _id });
-    },
+    async delete(type, id) {
+        const { modNames, forDelete } = defaultRemap[type]
+        const item = await this.getEntityById(type, id);
+        const length = modNames.length;
+        for (let i = 0; i < length; i++) {
+            const model = modNames[i];
 
-    async deletePolicy(id, type) {
-        const Policy = T.getModel(type);
-        try {
-            const policy = await Policy.getById(id);
-
-            const product = await Product.getById(policy.product);
-            if (product) {
-                const index = product.policies.indexOf(id);
-                product.policies.splice(index, 1);
-                await product.save();
+            if (item[model]) {
+                const entity = await this.getEntityById(model, item[model]);
+                if (entity) {
+                    entity[forDelete] = entity[forDelete].filter(x => x.toString() !== item._id.toString());
+                    entity.save();
+                }
             }
-
-            const contact = await Contact.getById(policy.contact);
-            if (contact) {
-                const index = contact.policies.indexOf(id);
-                contact.policies.splice(index, 1);
-                await contact.save();
-            }
-
-            return Policy.deleteOne({ _id: id })
-        } catch (e) {
-            console.log(e);
         }
-    },
 
-    async deleteProduct(id) {
-        console.log(id);
-        try {
-            const product = await Product.getById(id);
-            const contact = await Contact.getById(product.contact);
-
-            if (contact) {
-                const index = contact.products.indexOf(lead._id);
-                contact.products.splice(index, 1);
-                await contact.save();
-            }
-
-            return Product.deleteOne({ _id: id });
-        } catch (e) {
-            console.log(e);
-        }
+        return this.deleteEntity(type, id);
     }
 }
 

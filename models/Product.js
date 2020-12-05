@@ -10,20 +10,15 @@ const ProductSchema = new mongoose.Schema({
         ref: 'Lead',
         default: []
     }],
-    policies: [{
-        type: 'ObjectId',
-        ref: 'Policy',
-        default: []
-    }],
-    contact: {
-        type: 'ObjectId',
-        ref: 'Contact'
-    },
     fields: [{
         type: 'ObjectId',
         ref: 'Field',
         default: []
     }],
+    contact: {
+        type: 'ObjectId',
+        ref: 'Contact',
+    },
     system: Boolean
 });
 

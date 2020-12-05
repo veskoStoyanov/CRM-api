@@ -6,16 +6,16 @@ const createEntity = async (req, res, next) => {
     let entity = null;
     const { type } = req.body
     try {
-        let system = await EM.getEntityByData({ system: true }, type);
+        let system = await EM.getEntityByData(type, { system: true });
         if (!system) {
-            entity = await EM.createEntity({ system: true, name: 'SETUP' }, type);
+            entity = await EM.createEntity(type, { system: true, name: 'SETUP' });
         } else {
             const defaultData = {
                 system: false,
                 fields: system.fields
             }
 
-            entity = await EM.createEntity(defaultData, type);
+            entity = await EM.createEntity(type, defaultData);
         }
     } catch (e) {
         console.log(e);
@@ -43,7 +43,7 @@ const getEntity = async (req, res, next) => {
     const { id, type } = req.params;
     let entity = null;
     try {
-        entity = await EM.getEntityById(id, type)
+        entity = await EM.getEntityById(type, id)
             .populate('fields');
     } catch (e) {
         console.log(e);
@@ -56,7 +56,7 @@ const getEntity = async (req, res, next) => {
 const deleteEntity = async (req, res) => {
     const { id, type } = req.params;
     try {
-      await EM.deleteEntity(id, type);
+      await EM.delete(type, id);
     } catch (e) {
       console.log(e);
       return res.status(400).json({ success: false, errors: [''] });

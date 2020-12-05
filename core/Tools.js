@@ -3,8 +3,6 @@ const ObjectId = mongoose.Types.ObjectId;
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 
-const models = require('../models');
-
 const transporter = nodemailer.createTransport({
   host: "neon.superhosting.bg",
   port: 587,
@@ -69,9 +67,7 @@ const Tools = {
 		return data;
   },
   
-  getModel(type) {
-    return models[type[0].toUpperCase() + type.slice(1)];
-  }
+  
 }
 
 module.exports = Tools;

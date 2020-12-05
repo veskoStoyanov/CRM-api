@@ -6,25 +6,26 @@ const LeadSchema = new mongoose.Schema({
     default: 'New Lead',
   },
   price: {
-   default : 0,
-    type: Number
+    type: Number,
+    default: 0
   },
   pipe: {
     type: 'ObjectId',
     ref: 'Pipe'
   },
-  vehicle: {
+  product: {
     type: 'ObjectId',
-    ref: 'Vehicle'
+    ref: 'Product'
   },
   contact: {
     type: 'ObjectId',
     ref: 'Contact'
   },
   fields: [{
-      type: 'ObjectId',
-      ref: 'Field'
-    }]
+    type: 'ObjectId',
+    ref: 'Field'
+  }],
+  system: Boolean
 });
 
 const Lead = mongoose.model('Lead', LeadSchema);
