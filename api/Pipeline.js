@@ -139,11 +139,10 @@ const deletePipe = async (req, res) => {
   const { id } = req.params;
   try {
     const pipe = await EM.getEntityById(pipeMod, id);
-    pipe.leads.map(async id => await EM.deleteEntity(leadMod ,id));
+    pipe.leads.map(async id => await EM.deleteEntity(leadMod, id));
 
     const pipeline = await EM.getEntityById(pipelineMod, pipe.pipeline);
-    const index = pipeline.pipes.indexOf(id);
-    pipeline.pipes.splice(index, 1);
+    pipeline.pipes = pipeline.pipes.filter(x => x.toString() !== id.toString());
 
     await pipeline.save();
     await EM.deleteEntity(pipeMod, id);
@@ -160,7 +159,6 @@ const updatePipeTitle = async (req, res, next) => {
   let pipe = null;
   try {
     pipe = await EM.getEntityById(pipeMod ,id);
-
     if (pipe.title === newTitle) {
       return res.status(200).json({ success: true, updatedPipe: pipe });
     }
@@ -174,8 +172,8 @@ const updatePipeTitle = async (req, res, next) => {
 
   return res.status(200).json({ success: true, updatedPipe: pipe });
 };
-// Lead
 
+// Lead
 const getLead = async (req, res, next) => {
   const { id } = req.params;
   let lead = null;
@@ -192,7 +190,6 @@ const getLead = async (req, res, next) => {
 const createLead = async (req, res, next) => {
   const { pipeId } = req.body;
   let lead = null;
-
   try {
     const pipe = await EM.getEntityById(pipeMod, pipeId);
     let system = await EM.getEntityByData(leadMod, { system: true });
@@ -215,27 +212,6 @@ const createLead = async (req, res, next) => {
     return res.status(400).json({ success: false, errors: [''] });
   }
  
-  return res.status(200).json({ success: true, lead });
-};
-
-const updateLead = async (req, res, next) => {
-  const { id } = req.params;
-  const updatedData = req.body;
-  let lead = null;
-  try {
-    lead = await EM.getEntityById(leadMod, id);
-
-    Object.keys(updatedData)
-      .forEach(key => {
-        lead[key] = updatedData[key];
-      });
-
-    await lead.save();
-  } catch (e) {
-    console.log(e);
-    return res.status(400).json({ success: false, errors: [''] });
-  }
-
   return res.status(200).json({ success: true, lead });
 };
 
@@ -315,7 +291,6 @@ module.exports = {
   updatePipeTitle,
   getLead,
   movePipe,
-  updateLead,
   deleteLead,
   deletePipe,
   deletePipeline,

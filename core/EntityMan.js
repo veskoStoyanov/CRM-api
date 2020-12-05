@@ -16,6 +16,7 @@ const EntityMan = {
     getModel(type) {
         return models[type[0].toUpperCase() + type.slice(1)];
     },
+    
     createEntity(type, data) {
         const Model = this.getModel(type);
         return Model.create(data);

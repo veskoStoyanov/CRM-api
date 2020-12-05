@@ -1,22 +1,50 @@
 const FM = require('../core/FieldMan');
 const EM = require('../core/EntityMan');
 const fieldMod = 'field';
+const fieldOrderMod = 'fieldOrder'
 
 const addField = async (req, res) => {
-    let field = null;
-    const { type, entityId, ...rest } = req.body;
+    let fields = null;
+    const {entity, ...rest} = req.body;
     try {
-        field = await EM.createEntity(fieldMod, rest);
+        const field = await EM.createEntity(fieldMod, rest);
+        console.log(field);
         
-        const entity = await EM.getEntityById(type, entityId);
-        entity.fields.push(field._id);
-        await entity.save();
+        const fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity })
+        .populate('fields');
+        
+
+        fieldOrder.fields.push(field);
+        fields = fieldOrder.fields;
+        await fieldOrder.save();
+
+        console.log(fields);
+        
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
     }
 
-    return res.status(200).json({ success: true, field });
+    return res.status(200).json({ success: true, fields });
+};
+
+const getFields = async (req, res) => {
+    let fields = null;
+    const { type } = req.params;
+    try {
+        let fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity: type })
+        .populate('fields')
+        if(!fieldOrder) {
+            fieldOrder = await EM.createEntity(fieldOrderMod, { entity: type});
+        }
+
+        fields = fieldOrder.fields; 
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ success: false, errors: [''] });
+    }
+
+    return res.status(200).json({ success: true, fields });
 };
 
 const bindField = async (req, res) => {
@@ -33,44 +61,49 @@ const bindField = async (req, res) => {
 
 const updateField = async (req, res) => {
     const { id } = req.params;
-    const { fieldId, ...rest } = req.body;
+    const { name, type } = req.body;
     let field = null;
     try {
         field = await await EM.getEntityById(fieldMod, id);
-        Object.keys(rest).forEach(key => {
-            field[key] = rest[key]
-        });
-
+        
+      if(field.name !== name || field.type !== type) {
+        field.name = name;
+        field.type = type
+      } else {
+        return res.status(200).json({ success: true, updatedField: field });
+      }
+      
         await field.save();
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
     }
 
-    return res.status(200).json({ success: true, field });
+    return res.status(200).json({ success: true, updatedField: field });
 };
 
 const moveField = async (req, res, next) => {
-    let entity = null;
+    let fields = null;
     const {
-        type,
-        entityId,
+        entity,
         sourceIndex,
         destinationIndex
     } = req.body;
+
     try {
-        entity = await EM.getEntityById(type, entityId)
+        fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity })
             .populate('fields');
 
-        const field = entity.fields.splice(sourceIndex, 1)[0];
-        entity.fields.splice(destinationIndex, 0, field);
-
-        return entity.save()
+        const field = fieldOrder.fields.splice(sourceIndex, 1)[0];
+         fieldOrder.fields.splice(destinationIndex, 0, field);
+         console.log(fieldOrder);
+        fields = fieldOrder.fields;
+        await fieldOrder.save();
     } catch (e) {
         console.log(e);
     }
 
-    return res.status(200).json({ success: true, entity });
+    return res.status(200).json({ success: true, fields });
 };
 
 const getBindedFields = async (req, res) => {
@@ -100,5 +133,6 @@ module.exports = {
     bindField,
     updateField,
     moveField,
-    getBindedFields
+    getBindedFields,
+    getFields
 }

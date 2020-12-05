@@ -3,30 +3,19 @@ const mongoose = require('mongoose');
 const ContactSchema = new mongoose.Schema({
   name: {
     type: String,
-    default: 'DEFAULT',
+    default: 'New Contact',
   },
-  email: String,
+  fields: [],
   leads: [{
     type: 'ObjectId',
     ref: 'Lead',
     default: []
   }],
-  policies: [{
+  products: [{
     type: 'ObjectId',
-    ref: 'Policy',
+    ref: 'Product',
     default: []
   }],
-  vehicles: [{
-    type: 'ObjectId',
-    ref: 'Vehicle',
-    default: []
-  }],
-  fields: [{
-    type: 'ObjectId',
-    ref: 'Field',
-    default: []
-  }],
-  system: Boolean
 });
 
 const Contact = mongoose.model('Contact', ContactSchema);

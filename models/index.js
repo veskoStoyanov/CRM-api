@@ -5,6 +5,7 @@ const Pipeline = require('./Pipeline');
 const User = require('./User');
 const Product = require('./Product');
 const Contact = require('./Contact');
+const FieldOrder = require('./FieldOrder');
 
 module.exports = {
     Field,
@@ -14,4 +15,5 @@ module.exports = {
     User,
     Product,
     Contact,
+    FieldOrder,
 };

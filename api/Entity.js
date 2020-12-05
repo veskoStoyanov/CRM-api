@@ -1,22 +1,13 @@
 const passport = require('passport');
 const T = require('../core/Tools');
 const EM = require('../core/EntityMan');
+const fieldOrderMod = 'fieldOrder'
 
 const createEntity = async (req, res, next) => {
     let entity = null;
     const { type } = req.body
-    try {
-        let system = await EM.getEntityByData(type, { system: true });
-        if (!system) {
-            entity = await EM.createEntity(type, { system: true, name: 'SETUP' });
-        } else {
-            const defaultData = {
-                system: false,
-                fields: system.fields
-            }
-
-            entity = await EM.createEntity(type, defaultData);
-        }
+    try {    
+        entity = await EM.createEntity(type, {});
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
@@ -30,11 +21,13 @@ const getEntities = async (req, res, next) => {
     let entities = null;
     try {
         entities = await EM.getEntities(type);
-        entities = T.removeProps(entities);
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
     }
+
+    entities = T.removeProps(entities);
+    console.log(entities);
 
     return res.status(200).json({ success: true, entities });
 };

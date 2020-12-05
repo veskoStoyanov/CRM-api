@@ -270,8 +270,8 @@
         }
       }
     },
-    "/pipe/delete/{id}": {
-      "post": {
+    "/pipe/{id}": {
+      "delete": {
         "tags": [
           "pipe"
         ],
@@ -382,24 +382,6 @@
             "content": {}
           }
         }
-      },
-      "put": {
-        "summary": "Update lead",
-        "description": "Logout the currently logged user.",
-        "tags": [
-          "lead"
-        ],
-        "operationId": "updateLead",
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {}
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {}
-          }
-        }
       }
     },
     "/move/lead": {
@@ -410,6 +392,28 @@
         "summary": "User profile retrieval",
         "description": "Retrieve user's self profile information",
         "operationId": "moveLead",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/fields/{type}": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "getFields",
         "responses": {
           "200": {
             "description": "Successful operation",
