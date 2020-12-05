@@ -21,11 +21,10 @@ const LeadSchema = new mongoose.Schema({
     type: 'ObjectId',
     ref: 'Contact'
   },
-  fields: [{
-    type: 'ObjectId',
-    ref: 'Field'
-  }],
-  system: Boolean
+  fields:  {
+    type: Array,
+    default: []
+  }
 });
 
 const Lead = mongoose.model('Lead', LeadSchema);

@@ -63,9 +63,8 @@ const getPipelineData = async (req, res, next) => {
 const deletePipeline = async (req, res) => {
   const pipeline = req.params.id;
   try {
-    //
     const pipes = await EM.getEntitiesByData(pipeMod, { pipeline });
-
+    
     const length = pipes.length;
     for (let i = 0; i < length; i++) {
       const pipe = pipes[i];

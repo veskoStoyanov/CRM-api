@@ -8,18 +8,12 @@ const addField = async (req, res) => {
     const {entity, ...rest} = req.body;
     try {
         const field = await EM.createEntity(fieldMod, rest);
-        console.log(field);
-        
         const fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity })
         .populate('fields');
         
-
         fieldOrder.fields.push(field);
         fields = fieldOrder.fields;
-        await fieldOrder.save();
-
-        console.log(fields);
-        
+        await fieldOrder.save();       
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });

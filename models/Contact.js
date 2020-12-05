@@ -5,7 +5,10 @@ const ContactSchema = new mongoose.Schema({
     type: String,
     default: 'New Contact',
   },
-  fields: [],
+  fields: {
+    type: Array,
+    default: []
+  },
   leads: [{
     type: 'ObjectId',
     ref: 'Lead',

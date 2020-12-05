@@ -560,6 +560,28 @@
         }
       }
     },
+    "/entity/{id}": {
+      "put": {
+        "tags": [
+          "field"
+        ],
+        "summary": "User profile retrieval",
+        "description": "Retrieve user's self profile information",
+        "operationId": "updateEntity",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {}
+          }
+        }
+      }
+    },
     "/entities/{type}": {
       "get": {
         "tags": [

@@ -10,16 +10,14 @@ const ProductSchema = new mongoose.Schema({
         ref: 'Lead',
         default: []
     }],
-    fields: [{
-        type: 'ObjectId',
-        ref: 'Field',
+    fields:  {
+        type: Array,
         default: []
-    }],
+      },
     contact: {
         type: 'ObjectId',
         ref: 'Contact',
-    },
-    system: Boolean
+    }
 });
 
 const Product = mongoose.model('Product', ProductSchema);
