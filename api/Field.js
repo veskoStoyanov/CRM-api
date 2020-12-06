@@ -5,15 +5,15 @@ const fieldOrderMod = 'fieldOrder'
 
 const addField = async (req, res) => {
     let fields = null;
-    const {entity, ...rest} = req.body;
+    const { entity, ...rest } = req.body;
     try {
         const field = await EM.createEntity(fieldMod, rest);
         const fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity })
-        .populate('fields');
-        
+            .populate('fields');
+
         fieldOrder.fields.push(field);
         fields = fieldOrder.fields;
-        await fieldOrder.save();       
+        await fieldOrder.save();
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
@@ -27,12 +27,13 @@ const getFields = async (req, res) => {
     const { type } = req.params;
     try {
         let fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity: type })
-        .populate('fields')
-        if(!fieldOrder) {
-            fieldOrder = await EM.createEntity(fieldOrderMod, { entity: type});
+            .populate('fields');
+
+        if (!fieldOrder) {
+            fieldOrder = await EM.createEntity(fieldOrderMod, { entity: type });
         }
 
-        fields = fieldOrder.fields; 
+        fields = fieldOrder.fields;
     } catch (e) {
         console.log(e);
         return res.status(400).json({ success: false, errors: [''] });
@@ -59,14 +60,14 @@ const updateField = async (req, res) => {
     let field = null;
     try {
         field = await await EM.getEntityById(fieldMod, id);
-        
-      if(field.name !== name || field.type !== type) {
-        field.name = name;
-        field.type = type
-      } else {
-        return res.status(200).json({ success: true, updatedField: field });
-      }
-      
+
+        if (field.name !== name || field.type !== type) {
+            field.name = name;
+            field.type = type
+        } else {
+            return res.status(200).json({ success: true, updatedField: field });
+        }
+
         await field.save();
     } catch (e) {
         console.log(e);
@@ -89,8 +90,7 @@ const moveField = async (req, res, next) => {
             .populate('fields');
 
         const field = fieldOrder.fields.splice(sourceIndex, 1)[0];
-         fieldOrder.fields.splice(destinationIndex, 0, field);
-         console.log(fieldOrder);
+        fieldOrder.fields.splice(destinationIndex, 0, field);
         fields = fieldOrder.fields;
         await fieldOrder.save();
     } catch (e) {
@@ -100,26 +100,19 @@ const moveField = async (req, res, next) => {
     return res.status(200).json({ success: true, fields });
 };
 
-const getBindedFields = async (req, res) => {
-    const { entityId, type } = req.params;
+const deleteField = async (req, res) => {
+    const { id, type } = req.params;
     let fields = null;
     try {
-        const entity = await EM.getEntityById(type, entityId)
-            .populate('fields');
-        fields = await EM.getEntities(fieldMod);
-        fields = fields.reduce((acc, curr) => {
-            const field = entity.fields.find(x => x.name === curr.name);
-            if (!field) {
-                acc.push(curr);
-            }
-
-            return acc;
-        }, []);
+        const fieldOrder = await EM.getEntityByData(fieldOrderMod, { entity: type })  
+        fieldOrder.fields = fieldOrder.fields.filter(x => x.toString() !== id.toString());
+        await fieldOrder.save();
+        await EM.deleteEntity(fieldMod, id);
     } catch (e) {
         console.log(e);
     }
 
-    return res.status(200).json({ success: true, fields });
+    return res.status(200).json({ success: true});
 };
 
 module.exports = {
@@ -127,6 +120,6 @@ module.exports = {
     bindField,
     updateField,
     moveField,
-    getBindedFields,
-    getFields
+    getFields,
+    deleteField
 }
